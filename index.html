@@ -16,9 +16,17 @@
     <h1>Soccer Player</h1>
   </div>
   <div data-role="content">
-    <ul id="SoccerPlayerList"></ul>
-	<input type="button" id="add_form" value="ADD FORM" /> 
-
+	<div id="form_list_box">
+		<ul id="SoccerPlayerList"></ul>
+		<input type="button" id="add_form" value="ADD FORM" /> 
+	</div>
+	<div id="form_new_box" style="display:none">
+		<button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">ADD PHOTO</button>
+		<img id="largeImage" width="100" src="" />
+		<div>Name<input type="text" value="" id="new_name" /></div>
+		<div>Club<input type="text" value="" id="new_club" /></div>
+		<button id="add_form_save">ADD</button> 
+	</div>
   </div>
 </div>
 
@@ -28,9 +36,7 @@
 <script type="text/javascript" charset="utf-8">
     //document.addEventListener("deviceready", onDeviceReady, false);
     var db = window.openDatabase("KODE", "1.0", "DB for EasyForm", 200000); //will create database Dummy_DB or open it
-	//function onDeviceReady() {
-		db.transaction(CreateDB, errorCB, successCB);
-	//}
+	db.transaction(CreateDB, errorCB, successCB);
     function CreateDB(tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS KODE_EasyForm (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, Club TEXT NOT NULL, Image TEXT NULL)');
     }
@@ -38,13 +44,12 @@
         alert("Error processing SQL: "+err.code);
     }
     function successCB() {
-        //alert("success!");
         db.transaction(queryDB,errorCB);
     }
     function queryDB(tx){
-        tx.executeSql('SELECT * FROM KODE_EasyForm',[],querySuccess,errorCB);
+        tx.executeSql('SELECT * FROM KODE_EasyForm',[],list_records,errorCB);
     }
-    function querySuccess(tx,result){
+    function list_records(tx,result){
 		//$.mobile.showPageLoadingMsg(true);
         var len = result.rows.length;
 		var htmlData = '';
@@ -56,8 +61,22 @@
 		}
 
     }
+    function addrecord(tx) {
+		tx.executeSql('INSERT INTO KODE_EasyForm(Name,Club,Image) VALUES ("'+$('#new_name').val()+'", "'+$('#new_club').val()+'","'+$('#largeImage').attr('src')+'")');
+    }
+	function successfully_added_form() {
+		db.transaction(queryDB,errorCB);
+		alert('Saved');
+		$('#form_list_box').css('display','block');
+		$('#form_new_box').css('display','none');
+	}
+	
 	$('#add_form').click(function(){
-		window.location = "form_new.html";
+		$('#form_list_box').css('display','none');
+		$('#form_new_box').css('display','block');
+	});
+	$('#add_form_save').click(function(){
+		db.transaction(addrecord, errorCB,successfully_added_form);
 	});
 </script>
 </html>

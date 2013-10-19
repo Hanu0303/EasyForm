@@ -36,7 +36,17 @@
 <script type="text/javascript" charset="utf-8">
     //document.addEventListener("deviceready", onDeviceReady, false);
     var db = window.openDatabase("KODE", "1.0", "DB for EasyForm", 200000); //will create database Dummy_DB or open it
-	db.transaction(CreateDB, errorCB, successCB);
+
+	var pictureSource;   
+	var destinationType; 
+
+	function onDeviceReady() 
+	{
+		pictureSource=navigator.camera.PictureSourceType;
+		destinationType=navigator.camera.DestinationType;
+		db.transaction(CreateDB, errorCB, successCB);
+	}
+	
     function CreateDB(tx) {
         tx.executeSql('CREATE TABLE IF NOT EXISTS KODE_EasyForm (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, Club TEXT NOT NULL, Image TEXT NULL)');
     }
@@ -69,6 +79,9 @@
 		alert('Saved');
 		$('#form_list_box').css('display','block');
 		$('#form_new_box').css('display','none');
+		$('#new_name').val('');
+		$('#new_club').val('');
+		$('#largeImage').attr('src','');
 	}
 	
 	$('#add_form').click(function(){

@@ -51,7 +51,7 @@
 		$("#SoccerPlayerList").html('');
 		for (var i=0; i<len; i++){
 			var row= result.rows.item(i);
-			htmlData = '<li><a href="form.html?id='+row['id']+'"><h3 class="ui-li-heading">'+row['Name']+'</h3><p class="ui-li-desc">Club '+row['Club']+'</p></a></li>';
+			htmlData = '<li><a href="form.html?id='+row['id']+'"><h3 class="ui-li-heading">'+row['Name']+'</h3><p class="ui-li-desc">Club '+row['Club']+'</p><p class="ui-li-desc">Image: '+row['Image']+'</p></a></li>';
 			$("#SoccerPlayerList").append(htmlData);
 		}
 

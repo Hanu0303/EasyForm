@@ -19,7 +19,7 @@
 	<div id="myform">
 		<div>Name<input type="text" value="" id="new_name" /></div>
 		<div>Club<input type="text" value="" id="new_club" /></div>
-		<button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Gallery!!</button>
+		<button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">ADD PHOTO</button>
 		<img id="largeImage" width="100" src="" />
 	</div>
 	<button id="add_form">ADD</button> 
@@ -46,7 +46,7 @@
 //DB stuff
 
     function addrecord(tx) {
-		tx.executeSql('INSERT INTO KODE_EasyForm(Name,Club,Image) VALUES ("'+$('#new_name').val()+'", "'+$('#new_club').val()+'",null)');
+		tx.executeSql('INSERT INTO KODE_EasyForm(Name,Club,Image) VALUES ("'+$('#new_name').val()+'", "'+$('#new_club').val()+'","'+$('#largeImage').attr('src')+'")');
     }
 	function querySuccess() {
 		alert('Saved');
@@ -71,17 +71,6 @@ function onPhotoURISuccess(imageURI)
     var largeImage = document.getElementById('largeImage');
     largeImage.style.display = 'block';
     largeImage.src = imageURI;
-}
-
-function onPhotoDataSuccess(imageURI) 
-{ 
-    var imgProfile = document.getElementById('imgProfile');
-    imgProfile.src = imageURI;
-    if(sessionStorage.isprofileimage==1)
-    {
-        getLocation();
-    }
-    movePic(imageURI);
 }
 
 function onFail(message) 

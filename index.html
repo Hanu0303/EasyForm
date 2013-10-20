@@ -69,7 +69,7 @@
 		$("#SoccerPlayerList").html('');
 		for (var i=0; i<len; i++){
 			var row= result.rows.item(i);
-			htmlData = '<li><div form_id="'+row['id']+'" class="view_form" onclick="view_form('+row['id']+')" style="cursor:pointer;"><h3 class="ui-li-heading">'+row['Name']+'</h3><p class="ui-li-desc">Club '+row['Club']+'</p><p class="ui-li-desc">Image: '+row['Image']+'</p></div></li>';
+			htmlData = '<div><button form_id="'+row['id']+'" class="view_form" onclick="view_form('+row['id']+')" style="cursor:pointer;"><h3 class="ui-li-heading">'+row['Name']+'</h3><p class="ui-li-desc">Club '+row['Club']+'</p><p class="ui-li-desc">Image: '+row['Image']+'</p></button></div>';
 			$("#SoccerPlayerList").append(htmlData);
 		}
     }

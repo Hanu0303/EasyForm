@@ -90,9 +90,6 @@
 		alert('Saved');
 		$('#form_list_box').css('display','block');
 		$('#form_new_box').css('display','none');
-		$('#new_name').val('');
-		$('#new_club').val('');
-		$('#largeImage').attr('src','');
 	}
 	function successfully_saved_form() {
 		db.transaction(queryDB,errorCB);
@@ -113,6 +110,10 @@
 	
 	
 	$('#add_form').click(function(){
+		$('#new_name').val('');
+		$('#new_club').val('');
+		$('#largeImage').attr('src','');
+		
 		$('#form_list_box').css('display','none');
 		$('#form_new_box').css('display','block');
 		//buttons

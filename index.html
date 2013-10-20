@@ -25,7 +25,9 @@
 		<img id="largeImage" width="100" src="" />
 		<div>Name<input type="text" value="" id="new_name" /></div>
 		<div>Club<input type="text" value="" id="new_club" /></div>
-		<button id="add_form_save">ADD</button> 
+
+		<button id="load_form_save">SAVE</button> 
+		<button id="add_form_save">ADD</button>
 	</div>
   </div>
 </div>
@@ -36,15 +38,15 @@
 <script type="text/javascript" charset="utf-8">
     document.addEventListener("deviceready", onDeviceReady, false);
     var db = window.openDatabase("KODE", "1.0", "DB for EasyForm", 200000); //will create database Dummy_DB or open it
-
+	db.transaction(CreateDB, errorCB, successCB);
+	
 	var pictureSource;   
 	var destinationType; 
-
-	function onDeviceReady() 
-	{
+	var current_form_id = 0;
+	
+	function onDeviceReady() {
 		pictureSource=navigator.camera.PictureSourceType;
 		destinationType=navigator.camera.DestinationType;
-		db.transaction(CreateDB, errorCB, successCB);
 	}
 	
     function CreateDB(tx) {
@@ -66,10 +68,15 @@
 		$("#SoccerPlayerList").html('');
 		for (var i=0; i<len; i++){
 			var row= result.rows.item(i);
-			htmlData = '<li><a href="form.html?id='+row['id']+'"><h3 class="ui-li-heading">'+row['Name']+'</h3><p class="ui-li-desc">Club '+row['Club']+'</p><p class="ui-li-desc">Image: '+row['Image']+'</p></a></li>';
+			htmlData = '<li><div form_id="'+row['id']+'" class="view_form" onclick="view_form('+row['id']+')" style="cursor:pointer;"><h3 class="ui-li-heading">'+row['Name']+'</h3><p class="ui-li-desc">Club '+row['Club']+'</p><p class="ui-li-desc">Image: '+row['Image']+'</p></div></li>';
 			$("#SoccerPlayerList").append(htmlData);
 		}
-
+    }
+    function GetThisForm() {
+		db.transaction(query_form_by_id,errorCB);
+    }
+    function query_form_by_id(tx){
+        tx.executeSql('SELECT * FROM KODE_EasyForm WHERE id ='+current_form_id,[],fields_to_form,errorCB);
     }
     function addrecord(tx) {
 		tx.executeSql('INSERT INTO KODE_EasyForm(Name,Club,Image) VALUES ("'+$('#new_name').val()+'", "'+$('#new_club').val()+'","'+$('#largeImage').attr('src')+'")');
@@ -78,19 +85,45 @@
 		db.transaction(queryDB,errorCB);
 		alert('Saved');
 		$('#form_list_box').css('display','block');
-		$('#form_new_box').css('display','none');
+		$('#form_load_box').css('display','none');
 		$('#new_name').val('');
 		$('#new_club').val('');
 		$('#largeImage').attr('src','');
 	}
+    function fields_to_form(tx,result){
+		//$.mobile.showPageLoadingMsg(true);
+        var len = result.rows.length;
+		for (var i=0; i<len; i++){
+			var row= result.rows.item(i);
+			$('#new_name').val(row['Name']);
+			$('#new_club').val(row['Club']);
+			$('#largeImage').attr('src',row['Image'])
+		}
+    }
+	
 	
 	$('#add_form').click(function(){
 		$('#form_list_box').css('display','none');
 		$('#form_new_box').css('display','block');
+		//buttons
+		$('#load_form_save').css('display','none');
+		$('#add_form_save').css('display','block');
 	});
 	$('#add_form_save').click(function(){
 		db.transaction(addrecord, errorCB,successfully_added_form);
 	});
+	function view_form(current_form_id_local){
+		$('#form_list_box').css('display','none');
+		$('#form_new_box').css('display','block');
+		//buttons
+		$('#load_form_save').css('display','block');
+		$('#add_form_save').css('display','none');
+		
+		current_form_id = current_form_id_local;
+		GetThisForm();
+	}
+	
+	
 	
 	//GALLERY stuff-----------------------------------
 
